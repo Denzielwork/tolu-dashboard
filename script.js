@@ -1,3 +1,6 @@
+const CLIENT_ID = '22030850960-vmlb3dsnl63shfv17dou9mnfg6ga26d2.apps.googleusercontent.com';
+const API_KEY = 'AIzaSyBCgePt_sZl68vxgitcUruI6kcvPAimGRc';
+let tokenClient;
 /* ============================================================
    T.O.L.U. — Tracker of Objectives, Legacy & Understanding
    Main JavaScript
@@ -30,10 +33,10 @@
     mouse.y = null;
   });
 
-  const PARTICLE_COUNT = 120;         // Balance density / performance
-  const CONNECT_DISTANCE = 110;       // Distance for particle-to-particle synapses
-  const MOUSE_LINK_DISTANCE = 180;    // Distance for particle-to-mouse synapses
-  const MAX_SPEED = 2.5;
+  const PARTICLE_COUNT = 1620;         // Balance density / performance
+  const CONNECT_DISTANCE = 710;       // Distance for particle-to-particle synapses
+  const MOUSE_LINK_DISTANCE = 1770;    // Distance for particle-to-mouse synapses
+  const MAX_SPEED = 10.5;
 
   class Particle {
     constructor() {
@@ -865,7 +868,18 @@ function escapeHtml(str) {
 /* ============================================================
    17. INIT — RUN ON DOM READY
    ============================================================ */
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', () => {  // Initialize Google API
+  const script = document.createElement('script');
+  script.src = "https://accounts.google.com/gsi/client";
+  script.onload = () => {
+      tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: 'https://www.googleapis.com/auth/calendar.readonly',
+          callback: handleAuthResponse,
+      });
+      initializeGapiClient();
+  };
+  document.head.appendChild(script);
   // Wire up drop zone
   const dropZone = document.getElementById('drop-zone');
   const fileInput = document.getElementById('file-input');
@@ -899,7 +913,109 @@ window.addEventListener('DOMContentLoaded', () => {
   loadIngestedDocs();
   updatePomodoroDisplay();
 });
+/* ============================================================
+   18. GOOGLE CALENDAR INTEGRATION
+   ============================================================ */
+function initializeGapiClient() {
+    gapi.load('client', async () => {
+        await gapi.client.init({
+            apiKey: API_KEY,
+            discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+        });
+    });
+}
 
+function handleAuthClick() {
+    tokenClient.requestAccessToken();
+}
+
+function handleAuthResponse(resp) {
+    if (resp.error !== undefined) {
+        console.error(resp);
+        return;
+    }
+    fetchCalendarEvents();
+}
+
+async function fetchCalendarEvents() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    try {
+        const response = await gapi.client.calendar.events.list({
+            'calendarId': 'primary',
+            'timeMin': today.toISOString(),
+            'timeMax': tomorrow.toISOString(),
+            'singleEvents': true,
+            'orderBy': 'startTime'
+        });
+
+        const events = response.result.items;
+        drawWheel(events);
+    } catch (err) {
+        console.error('Error fetching calendar:', err);
+    }
+}
+
+function drawWheel(events) {
+    const svg = document.getElementById('chrono-matrix-svg');
+    if (!svg) return;
+    svg.innerHTML = ''; 
+
+    const radius = 80;
+    const circumference = 2 * Math.PI * radius; 
+    const totalMinutesInDay = 24 * 60; 
+
+    const bgRing = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    bgRing.setAttribute("cx", "100");
+    bgRing.setAttribute("cy", "100");
+    bgRing.setAttribute("r", radius);
+    bgRing.setAttribute("fill", "transparent");
+    bgRing.setAttribute("stroke", "#1A1A1A");
+    bgRing.setAttribute("stroke-width", "28");
+    svg.appendChild(bgRing);
+
+    if (!events || events.length === 0) {
+        return; 
+    }
+
+    events.forEach(event => {
+        if (!event.start.dateTime) return; 
+
+        const start = new Date(event.start.dateTime);
+        const end = new Date(event.end.dateTime);
+
+        const startMinutes = start.getHours() * 60 + start.getMinutes();
+        const endMinutes = end.getHours() * 60 + end.getMinutes();
+        
+        let durationMinutes = endMinutes - startMinutes;
+        if (durationMinutes < 0) durationMinutes += totalMinutesInDay; 
+
+        const minutesToStroke = circumference / totalMinutesInDay;
+        const strokeLength = durationMinutes * minutesToStroke;
+        const strokeOffset = circumference - (startMinutes * minutesToStroke);
+
+        const arc = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        arc.setAttribute("cx", "100");
+        arc.setAttribute("cy", "100");
+        arc.setAttribute("r", radius);
+        arc.setAttribute("fill", "transparent");
+        arc.setAttribute("stroke", "#DC143C"); 
+        arc.setAttribute("stroke-width", "28");
+        arc.setAttribute("stroke-dasharray", `${strokeLength} ${circumference - strokeLength}`);
+        arc.setAttribute("stroke-dashoffset", strokeOffset);
+        arc.setAttribute("class", "hover:brightness-125 transition-all cursor-pointer");
+        
+        arc.addEventListener('click', () => {
+            const timeString = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')} - ${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`;
+            updateInfo(event.summary || 'Untitled Event', timeString, event.description || 'No description');
+        });
+
+        svg.appendChild(arc);
+    });
+}
 window.addEventListener('beforeunload', () => {
   try { saveWins(); } catch (e) { /* noop */ }
 });
