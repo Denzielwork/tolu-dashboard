@@ -33,10 +33,10 @@ let tokenClient;
     mouse.y = null;
   });
 
-  const PARTICLE_COUNT = 300;         // Balance density / performance
-  const CONNECT_DISTANCE = 160;       // Distance for particle-to-particle synapses
-  const MOUSE_LINK_DISTANCE = 250;    // Distance for particle-to-mouse synapses
-  const MAX_SPEED = 3.5;
+  const PARTICLE_COUNT = 120;         // Balance density / performance
+  const CONNECT_DISTANCE = 110;       // Distance for particle-to-particle synapses
+  const MOUSE_LINK_DISTANCE = 180;    // Distance for particle-to-mouse synapses
+  const MAX_SPEED = 2.5;
 
   class Particle {
     constructor() {
