@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T.O.L.U. | Tracker of Objectives, Legacy & Understanding</title>
+
+  <!-- Tailwind CSS (Utility Classes) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Google Fonts: Rajdhani & Space Grotesk -->
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- OCR Engine for Images -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/dist/tesseract.min.js"></script>
+  <!-- PDF Text Extractor -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- File Saver (for future exports) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="wakandan-bg min-h-screen flex flex-col p-4 md:p-6">
+
+  <!-- INTERACTIVE PARTICLE BACKGROUND -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ============================================ -->
+  <!-- TOP HEADER -->
+  <!-- ============================================ -->
+  <header class="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between border-b border-[#DC143C]/30 pb-4 mb-6 relative z-10">
+    <div class="flex items-center space-x-3">
+      <div class="w-3 h-3 bg-[#DC143C] rounded-full animate-ping"></div>
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold tracking-widest text-white uppercase glow-red">
+          T.O.L.U. <span class="text-[#DC143C]">|</span> DENZIEL ARMAH
+        </h1>
+        <p class="text-[10px] font-tech text-[#DC143C] tracking-[0.25em] uppercase mt-0.5">Tracker of Objectives, Legacy &amp; Understanding</p>
+      </div>
+    </div>
+    <div class="mt-2 sm:mt-0 flex items-center space-x-4">
+      <span id="live-clock" class="text-xs md:text-sm font-tech text-[#D3D3D3] tracking-widest border border-[#D3D3D3]/20 px-3 py-1 rounded bg-[#1A1A1A]">--:--:-- UTC</span>
+      <button onclick="toggleCookedMode()" id="cooked-toggle-btn" class="text-xs font-tech tracking-wider uppercase bg-[#1A1A1A] hover:bg-[#DC143C]/20 border border-[#DC143C]/50 text-white px-3 py-1 rounded transition-all cursor-pointer">
+        🚨 Cooked Mode: OFF
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================ -->
+  <!-- MISSION MOTTO -->
+  <!-- ============================================ -->
+  <div class="w-full max-w-7xl mx-auto mb-6 text-center relative z-10">
+    <p class="text-sm md:text-base font-tech tracking-[0.25em] text-white uppercase">
+      MONEY <span class="text-[#DC143C]">.</span>
+      SLEEP <span class="text-[#DC143C]">.</span>
+      SMALL CAREER PROGRESS <span class="text-[#DC143C]">.</span>
+      REPEAT
+    </p>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- T.O.L.U. INTRO -->
+  <!-- ============================================ -->
+  <section class="w-full max-w-7xl mx-auto mb-6 relative z-10">
+    <div class="glass-card rounded-2xl p-6 border-glow">
+      <div class="text-center mb-5">
+        <h2 class="font-tech text-3xl text-white font-bold tracking-[0.3em] glow-red">T.O.L.U.</h2>
+        <p class="text-[11px] font-tech text-[#DC143C] tracking-[0.25em] uppercase mt-1">Tracker of Objectives, Legacy &amp; Understanding</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div class="p-3 bg-[#0A0A0A]/60 rounded-lg border border-[#DC143C]/20">
+          <div class="text-2xl font-tech font-bold text-[#DC143C]">T</div>
+          <div class="text-xs text-white font-tech tracking-wider mt-1">TRACKER</div>
+          <div class="text-[10px] text-[#D3D3D3]/60 mt-1">Monitoring your habits, tasks &amp; calendar.</div>
+        </div>
+        <div class="p-3 bg-[#0A0A0A]/60 rounded-lg border border-[#DC143C]/20">
+          <div class="text-2xl font-tech font-bold text-[#DC143C]">O</div>
+          <div class="text-xs text-white font-tech tracking-wider mt-1">OBJECTIVES</div>
+          <div class="text-[10px] text-[#D3D3D3]/60 mt-1">Hitting your daily and weekly goals.</div>
+        </div>
+        <div class="p-3 bg-[#0A0A0A]/60 rounded-lg border border-[#DC143C]/20">
+          <div class="text-2xl font-tech font-bold text-[#DC143C]">L</div>
+          <div class="text-xs text-white font-tech tracking-wider mt-1">LEGACY</div>
+          <div class="text-[10px] text-[#D3D3D3]/60 mt-1">The long-term impact of what you are building.</div>
+        </div>
+        <div class="p-3 bg-[#0A0A0A]/60 rounded-lg border border-[#DC143C]/20">
+          <div class="text-2xl font-tech font-bold text-[#DC143C]">U</div>
+          <div class="text-xs text-white font-tech tracking-wider mt-1">UNDERSTANDING</div>
+          <div class="text-[10px] text-[#D3D3D3]/60 mt-1">Processing your data and learning how you work best.</div>
+        </div>
+      </div>
+      <p class="text-[11px] text-[#D3D3D3]/70 italic text-center mt-5 max-w-3xl mx-auto">
+        "In many African cultures, there is a deep respect for building upon the work of those who came before you to leave a strong foundation for the next generation. TOLU isn't just about reminding you to do your homework; it's about making sure your daily objectives align with your long-term legacy."
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- AI COMMAND LAUNCHPAD (COMPACT) -->
+  <!-- ============================================ -->
+  <section class="w-full max-w-2xl mx-auto mb-6 relative z-10">
+    <div class="glass-card rounded-xl p-5 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">AI COMMAND LAUNCHPAD</h2>
+        <span class="text-xs text-[#DC143C] font-mono">QUICK.LAUNCH</span>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <a href="https://chat.deepseek.com" target="_blank" rel="noopener" class="flex flex-col items-center justify-center p-3 bg-[#1A1A1A]/60 rounded-lg border border-[#D3D3D3]/10 hover:border-[#DC143C] hover:bg-[#DC143C]/10 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-[#0A0A0A] flex items-center justify-center text-xl mb-2 border border-[#DC143C]/30 group-hover:shadow-[0_0_15px_rgba(220,20,60,0.6)] group-hover:scale-110 transition-all duration-300">🐋</div>
+          <span class="text-[10px] font-tech text-[#D3D3D3] group-hover:text-white tracking-wider uppercase text-center">DeepSeek</span>
+        </a>
+        <a href="https://gemini.google.com" target="_blank" rel="noopener" class="flex flex-col items-center justify-center p-3 bg-[#1A1A1A]/60 rounded-lg border border-[#D3D3D3]/10 hover:border-[#DC143C] hover:bg-[#DC143C]/10 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-[#0A0A0A] flex items-center justify-center text-xl mb-2 border border-[#DC143C]/30 group-hover:shadow-[0_0_15px_rgba(220,20,60,0.6)] group-hover:scale-110 transition-all duration-300">✨</div>
+          <span class="text-[10px] font-tech text-[#D3D3D3] group-hover:text-white tracking-wider uppercase text-center">Gemini</span>
+        </a>
+        <a href="https://chatgpt.com" target="_blank" rel="noopener" class="flex flex-col items-center justify-center p-3 bg-[#1A1A1A]/60 rounded-lg border border-[#D3D3D3]/10 hover:border-[#DC143C] hover:bg-[#DC143C]/10 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-[#0A0A0A] flex items-center justify-center text-xl mb-2 border border-[#DC143C]/30 group-hover:shadow-[0_0_15px_rgba(220,20,60,0.6)] group-hover:scale-110 transition-all duration-300">🧠</div>
+          <span class="text-[10px] font-tech text-[#D3D3D3] group-hover:text-white tracking-wider uppercase text-center">ChatGPT</span>
+        </a>
+        <a href="https://perplexity.ai" target="_blank" rel="noopener" class="flex flex-col items-center justify-center p-3 bg-[#1A1A1A]/60 rounded-lg border border-[#D3D3D3]/10 hover:border-[#DC143C] hover:bg-[#DC143C]/10 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-[#0A0A0A] flex items-center justify-center text-xl mb-2 border border-[#DC143C]/30 group-hover:shadow-[0_0_15px_rgba(220,20,60,0.6)] group-hover:scale-110 transition-all duration-300">🔍</div>
+          <span class="text-[10px] font-tech text-[#D3D3D3] group-hover:text-white tracking-wider uppercase text-center">Perplexity</span>
+        </a>
+        <a href="https://claude.ai" target="_blank" rel="noopener" class="flex flex-col items-center justify-center p-3 bg-[#1A1A1A]/60 rounded-lg border border-[#D3D3D3]/10 hover:border-[#DC143C] hover:bg-[#DC143C]/10 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-[#0A0A0A] flex items-center justify-center text-xl mb-2 border border-[#DC143C]/30 group-hover:shadow-[0_0_15px_rgba(220,20,60,0.6)] group-hover:scale-110 transition-all duration-300">🤖</div>
+          <span class="text-[10px] font-tech text-[#D3D3D3] group-hover:text-white tracking-wider uppercase text-center">Claude</span>
+        </a>
+        <a href="https://notebook.google.com" target="_blank" rel="noopener" class="flex flex-col items-center justify-center p-3 bg-[#1A1A1A]/60 rounded-lg border border-[#D3D3D3]/10 hover:border-[#DC143C] hover:bg-[#DC143C]/10 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-[#0A0A0A] flex items-center justify-center text-xl mb-2 border border-[#DC143C]/30 group-hover:shadow-[0_0_15px_rgba(220,20,60,0.6)] group-hover:scale-110 transition-all duration-300">📓</div>
+          <span class="text-[10px] font-tech text-[#D3D3D3] group-hover:text-white tracking-wider uppercase text-center">NotebookLM</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- INTERACTIVE LIVE CLOCK -->
+  <!-- ============================================ -->
+  <section class="glass-card rounded-2xl p-6 max-w-2xl mx-auto mb-6 flex flex-col items-center justify-center relative border-glow overflow-hidden z-10">
+    <div class="absolute w-64 h-64 rounded-full bg-[#DC143C]/5 blur-3xl"></div>
+
+    <div class="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center z-10">
+      <svg class="absolute w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="95" fill="transparent" stroke="#D3D3D3" stroke-width="1" stroke-dasharray="2 10" class="opacity-30" />
+        <circle cx="100" cy="100" r="85" fill="transparent" stroke="#DC143C" stroke-width="4" stroke-dasharray="267" stroke-dashoffset="0" class="opacity-20" />
+        <circle cx="100" cy="100" r="85" fill="transparent" stroke="#D3D3D3" stroke-width="4" stroke-dasharray="267" stroke-dashoffset="133" class="opacity-20" />
+        <circle id="clock-ring-progress" cx="100" cy="100" r="85" fill="transparent" stroke="#DC143C" stroke-width="6" stroke-dasharray="534" stroke-dashoffset="534" stroke-linecap="round" style="filter: drop-shadow(0 0 8px #DC143C);" />
+      </svg>
+
+      <div class="absolute flex flex-col items-center justify-center text-center">
+        <div class="flex items-center space-x-2 mb-1">
+          <span id="clock-day" class="text-sm font-tech text-[#D3D3D3] uppercase tracking-widest">TUE</span>
+          <span id="clock-date" class="text-sm font-tech text-[#DC143C] tracking-widest">26TH</span>
+        </div>
+        <div id="clock-time" class="text-5xl sm:text-6xl font-tech font-bold text-white glow-red tracking-wider">10:12:45</div>
+        <div id="clock-ampm" class="text-xs font-tech text-[#DC143C] tracking-[0.3em] mt-1 uppercase">AM</div>
+        <div class="mt-6 flex flex-col items-center space-y-1">
+          <div class="text-sm font-tech text-white tracking-widest"><span id="clock-steps">0</span></div>
+          <div class="text-[10px] font-tech text-[#D3D3D3]/60 uppercase tracking-widest">steps today</div>
+          <div class="w-1.5 h-1.5 rounded-full bg-[#DC143C] mt-1 shadow-[0_0_8px_#DC143C]"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- ROW 1: MAIN DASHBOARD -->
+  <!-- ============================================ -->
+  <main class="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6 relative z-10">
+
+    <!-- MISSION COMMAND -->
+    <section class="glass-card rounded-xl p-5 flex flex-col justify-between space-y-4 lg:col-span-1 border-glow">
+      <div>
+        <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-3">
+          <h2 class="font-tech text-lg text-white font-bold tracking-wider">MISSION COMMAND</h2>
+          <span class="text-[#DC143C] text-xs font-mono">SYS.01</span>
+        </div>
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-start space-x-2"><span class="text-[#DC143C] mt-1">▪</span><span><strong class="text-white">Optimize the Grind:</strong> Eliminate friction in pre-work prep.</span></li>
+          <li class="flex items-start space-x-2"><span class="text-[#DC143C] mt-1">▪</span><span><strong class="text-white">Command Focus:</strong> Complete career sessions with zero external distraction.</span></li>
+          <li class="flex items-start space-x-2"><span class="text-[#DC143C] mt-1">▪</span><span><strong class="text-white">Drive Progress:</strong> Compound small daily wins into long-term leverage.</span></li>
+        </ul>
+      </div>
+      <div class="bg-[#0A0A0A]/60 p-3 rounded border border-[#D3D3D3]/10 text-xs text-[#D3D3D3]/70">STATUS: <span class="text-emerald-400 font-bold">OPERATIONAL</span></div>
+    </section>
+
+    <!-- 24-HR CHRONO-MATRIX -->
+    <section class="glass-card rounded-2xl p-6 lg:col-span-2 flex flex-col items-center justify-center relative border-glow">
+      <div class="absolute top-4 left-6 text-xs font-tech text-[#D3D3D3]/60 tracking-widest">24-HR CHRONO-MATRIX</div>
+      <div class="relative w-72 h-72 sm:w-80 sm:h-80 my-4 flex items-center justify-center">
+        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="80" fill="transparent" stroke="#1A1A1A" stroke-width="28" />
+          <circle cx="100" cy="100" r="80" fill="transparent" stroke="#D3D3D3" stroke-width="28" stroke-dasharray="502" stroke-dashoffset="313" class="opacity-20 hover:opacity-100 transition-opacity cursor-pointer" onclick="updateInfo('Free Recovery','01:00 - 06:00','Rest, decompression, and mental recharge.')" />
+          <circle cx="100" cy="100" r="80" fill="transparent" stroke="#D3D3D3" stroke-width="28" stroke-dasharray="502" stroke-dashoffset="408" class="opacity-40 hover:opacity-100 transition-opacity cursor-pointer" onclick="updateInfo('Get Ready','06:00 - 07:00','Hygiene, dressing, and prep.')" />
+          <circle cx="100" cy="100" r="80" fill="transparent" stroke="#D3D3D3" stroke-width="28" stroke-dasharray="502" stroke-dashoffset="428" class="opacity-30 hover:opacity-100 transition-opacity cursor-pointer" onclick="updateInfo('Travel','07:00 - 08:00','Commute to work location.')" />
+          <circle cx="100" cy="100" r="80" fill="transparent" stroke="#DC143C" stroke-width="28" stroke-dasharray="502" stroke-dashoffset="140" class="hover:brightness-125 transition-all cursor-pointer" onclick="updateInfo('Leaflet Work','08:00 - 13:30','Primary physical distribution shift.')" />
+          <circle cx="100" cy="100" r="80" fill="transparent" stroke="#D3D3D3" stroke-width="28" stroke-dasharray="502" stroke-dashoffset="448" class="opacity-40 hover:opacity-100 transition-opacity cursor-pointer" onclick="updateInfo('Travel Decompress','13:30 - 14:30','Return transit and wind down.')" />
+          <circle cx="100" cy="100" r="80" fill="transparent" stroke="#DC143C" stroke-width="28" stroke-dasharray="502" stroke-dashoffset="250" class="opacity-80 hover:opacity-100 transition-all cursor-pointer" onclick="updateInfo('Sleep','14:30 - 22:30','Core biological rest window.')" />
+          <circle cx="100" cy="100" r="80" fill="transparent" stroke="#D3D3D3" stroke-width="28" stroke-dasharray="502" stroke-dashoffset="480" class="opacity-70 hover:opacity-100 transition-opacity cursor-pointer" onclick="updateInfo('Wake & Food','22:30 - 23:00','Fuel up and transition to high-focus state.')" />
+          <circle cx="100" cy="100" r="80" fill="transparent" stroke="#DC143C" stroke-width="32" stroke-dasharray="502" stroke-dashoffset="460" class="brightness-150 hover:brightness-200 transition-all cursor-pointer" onclick="updateInfo('Career Priority','23:00 - 01:00','MAXIMUM COMMITMENT, NOT A MINIMUM. High-leverage execution.')" />
+        </svg>
+        <div id="timeline-info" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 pointer-events-none">
+          <span class="text-[10px] font-tech text-[#DC143C] tracking-widest uppercase">ACTIVE FOCUS</span>
+          <h3 id="info-title" class="text-lg font-bold text-white mt-1">Career Priority</h3>
+          <p id="info-time" class="text-xs text-[#D3D3D3] font-mono mt-0.5">23:00 - 01:00</p>
+          <p id="info-desc" class="text-[11px] text-[#D3D3D3]/70 mt-1 max-w-[160px]">Maximum commitment, not a minimum.</p>
+        </div>
+      </div>
+      <div class="text-[11px] text-[#D3D3D3]/60 text-center mt-2">Click any sector on the ring to inspect block parameters.</div>
+    </section>
+
+    <!-- TARGETS & COOKED MODE -->
+    <section class="lg:col-span-1 flex flex-col space-y-6">
+      <div class="glass-card rounded-xl p-5 border-glow">
+        <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-3">
+          <h2 class="font-tech text-base text-white font-bold tracking-wider">WEEKLY CAREER TARGETS</h2>
+          <span class="text-xs text-[#DC143C] font-mono">04 / 02</span>
+        </div>
+        <div class="space-y-3 text-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs">Career Sessions (Max 4)</span>
+            <div class="flex space-x-1.5" id="career-sessions-dots">
+              <div onclick="toggleDot(this)" class="w-3.5 h-3.5 rounded-full bg-[#DC143C] cursor-pointer shadow-[0_0_8px_#DC143C]"></div>
+              <div onclick="toggleDot(this)" class="w-3.5 h-3.5 rounded-full bg-[#1A1A1A] border border-[#DC143C]/50 cursor-pointer"></div>
+              <div onclick="toggleDot(this)" class="w-3.5 h-3.5 rounded-full bg-[#1A1A1A] border border-[#DC143C]/50 cursor-pointer"></div>
+              <div onclick="toggleDot(this)" class="w-3.5 h-3.5 rounded-full bg-[#1A1A1A] border border-[#DC143C]/50 cursor-pointer"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs">Pure Rest Evenings (2)</span>
+            <div class="flex space-x-1.5" id="rest-evenings-dots">
+              <div onclick="toggleDot(this)" class="w-3.5 h-3.5 rounded-full bg-[#D3D3D3] cursor-pointer"></div>
+              <div onclick="toggleDot(this)" class="w-3.5 h-3.5 rounded-full bg-[#1A1A1A] border border-[#D3D3D3]/50 cursor-pointer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card rounded-xl p-5 border-glow relative overflow-hidden" id="cooked-card">
+        <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-3">
+          <h2 class="font-tech text-base text-white font-bold tracking-wider">IF I'M COOKED</h2>
+          <svg class="w-4 h-4 text-[#DC143C] animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <p class="text-xs text-[#D3D3D3]/90 italic mb-3">"If physical or mental fatigue hits absolute exhaustion limits:"</p>
+        <div class="bg-[#DC143C]/10 border border-[#DC143C]/40 p-3 rounded text-xs text-white font-tech tracking-wide uppercase text-center">SKIP IT AND SLEEP</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================ -->
+  <!-- ROW 2: HABIT STREAKS -->
+  <!-- ============================================ -->
+  <section class="w-full max-w-7xl mx-auto mb-6 relative z-10">
+    <div class="glass-card rounded-2xl p-6 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-3 mb-5">
+        <h2 class="font-tech text-xl text-white font-bold tracking-wider">DAILY HABIT STREAKS</h2>
+        <span class="text-xs text-[#DC143C] font-mono">SYNCED TO LOCALSTORAGE</span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="habit-card" data-habit="sleep">
+          <div class="text-3xl mb-2 text-center">😴</div>
+          <div class="text-xs text-center text-[#D3D3D3]/80 mb-2">Sleep 11pm-7:30am</div>
+          <button onclick="toggleHabit('sleep')" class="w-full py-2 text-xs font-tech uppercase rounded border border-[#DC143C]/50 hover:bg-[#DC143C]/20 transition-all" id="habit-sleep-btn">LOG</button>
+          <div class="text-center text-xs mt-2 text-[#D3D3D3]/60">Streak: <span id="habit-sleep-streak" class="text-[#DC143C] font-bold">0</span></div>
+        </div>
+        <div class="habit-card" data-habit="water">
+          <div class="text-3xl mb-2 text-center">💧</div>
+          <div class="text-xs text-center text-[#D3D3D3]/80 mb-2">3L Water</div>
+          <button onclick="toggleHabit('water')" class="w-full py-2 text-xs font-tech uppercase rounded border border-[#DC143C]/50 hover:bg-[#DC143C]/20 transition-all" id="habit-water-btn">LOG</button>
+          <div class="text-center text-xs mt-2 text-[#D3D3D3]/60">Streak: <span id="habit-water-streak" class="text-[#DC143C] font-bold">0</span></div>
+        </div>
+        <div class="habit-card" data-habit="steps">
+          <div class="text-3xl mb-2 text-center">🚶</div>
+          <div class="text-xs text-center text-[#D3D3D3]/80 mb-2">10k Steps</div>
+          <button onclick="toggleHabit('steps')" class="w-full py-2 text-xs font-tech uppercase rounded border border-[#DC143C]/50 hover:bg-[#DC143C]/20 transition-all" id="habit-steps-btn">LOG</button>
+          <div class="text-center text-xs mt-2 text-[#D3D3D3]/60">Streak: <span id="habit-steps-streak" class="text-[#DC143C] font-bold">0</span></div>
+        </div>
+        <div class="habit-card" data-habit="nosnus">
+          <div class="text-3xl mb-2 text-center">🚫</div>
+          <div class="text-xs text-center text-[#D3D3D3]/80 mb-2">No Snus / Vape</div>
+          <button onclick="toggleHabit('nosnus')" class="w-full py-2 text-xs font-tech uppercase rounded border border-[#DC143C]/50 hover:bg-[#DC143C]/20 transition-all" id="habit-nosnus-btn">LOG</button>
+          <div class="text-center text-xs mt-2 text-[#D3D3D3]/60">Streak: <span id="habit-nosnus-streak" class="text-[#DC143C] font-bold">0</span></div>
+        </div>
+        <div class="habit-card" data-habit="hygiene">
+          <div class="text-3xl mb-2 text-center">🚿</div>
+          <div class="text-xs text-center text-[#D3D3D3]/80 mb-2">Shower AM + PM</div>
+          <button onclick="toggleHabit('hygiene')" class="w-full py-2 text-xs font-tech uppercase rounded border border-[#DC143C]/50 hover:bg-[#DC143C]/20 transition-all" id="habit-hygiene-btn">LOG</button>
+          <div class="text-center text-xs mt-2 text-[#D3D3D3]/60">Streak: <span id="habit-hygiene-streak" class="text-[#DC143C] font-bold">0</span></div>
+        </div>
+        <div class="habit-card" data-habit="exercise">
+          <div class="text-3xl mb-2 text-center">💪</div>
+          <div class="text-xs text-center text-[#D3D3D3]/80 mb-2">Exercise</div>
+          <button onclick="toggleHabit('exercise')" class="w-full py-2 text-xs font-tech uppercase rounded border border-[#DC143C]/50 hover:bg-[#DC143C]/20 transition-all" id="habit-exercise-btn">LOG</button>
+          <div class="text-center text-xs mt-2 text-[#D3D3D3]/60">Streak: <span id="habit-exercise-streak" class="text-[#DC143C] font-bold">0</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- ROW 3: JOB TRACKER + DEBT + NET WORTH + POMODORO -->
+  <!-- ============================================ -->
+  <section class="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 relative z-10">
+
+    <!-- JOB APPLICATIONS -->
+    <div class="glass-card rounded-xl p-5 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">JOB APPLICATIONS</h2>
+        <span class="text-xs text-[#DC143C] font-mono" id="job-count">0 TOTAL</span>
+      </div>
+      <div class="space-y-3 mb-4">
+        <div class="flex items-center justify-between text-xs"><span>Applications Sent</span><span class="font-bold text-white stat-value" id="stat-applications">0</span></div>
+        <div class="flex items-center justify-between text-xs"><span>Interviews</span><span class="font-bold text-white stat-value" id="stat-interviews">0</span></div>
+        <div class="flex items-center justify-between text-xs"><span>Conversion Rate</span><span class="font-bold text-emerald-400 stat-value" id="stat-conversion">0%</span></div>
+      </div>
+      <div class="flex gap-2 mb-3">
+        <input type="text" id="job-company" placeholder="Company" class="flex-1">
+        <input type="text" id="job-role" placeholder="Role" class="flex-1">
+      </div>
+      <div class="flex gap-2 mb-3">
+        <select id="job-status" class="flex-1 text-xs bg-[#0A0A0A] border border-[#DC143C]/30 rounded p-2 text-[#D3D3D3]">
+          <option value="applied">Applied</option>
+          <option value="interview">Interview</option>
+          <option value="rejected">Rejected</option>
+          <option value="offer">Offer</option>
+        </select>
+        <button onclick="addJob()" class="px-4 py-2 text-xs font-tech uppercase bg-[#DC143C]/20 border border-[#DC143C]/50 rounded hover:bg-[#DC143C]/40 transition-all">ADD</button>
+      </div>
+      <div id="job-list" class="space-y-2 max-h-40 overflow-y-auto text-xs"></div>
+    </div>
+
+    <!-- DEBT ELIMINATION (with editable paid amount) -->
+    <div class="glass-card rounded-xl p-5 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">DEBT ELIMINATION</h2>
+        <span class="text-xs text-[#DC143C] font-mono">MISSION</span>
+      </div>
+      <div class="text-center mb-4">
+        <div class="text-3xl font-tech font-bold text-white stat-value">£<span id="debt-remaining">3,029</span></div>
+        <div class="text-xs text-[#D3D3D3]/60">remaining of £3,029</div>
+      </div>
+      <div class="w-full h-3 bg-[#0A0A0A] rounded-full overflow-hidden border border-[#DC143C]/30 mb-4">
+        <div id="debt-progress-bar" class="h-full bg-gradient-to-r from-[#DC143C] to-[#ff4d6d] progress-bar-fill transition-all duration-500" style="width: 0%"></div>
+      </div>
+      <div class="flex items-center justify-between text-xs mb-4">
+        <span class="text-emerald-400 flex items-center gap-1">
+          Paid: £<span id="debt-paid-display" class="cursor-pointer hover:underline border-b border-dashed border-emerald-400/50" onclick="toggleDebtEdit()">0</span>
+          <input type="number" id="debt-paid-edit" class="hidden w-20 text-xs p-1 bg-[#0A0A0A] border border-emerald-500/50 rounded text-emerald-300 text-right" min="0" step="0.01" onblur="commitDebtEdit()" onkeydown="if(event.key==='Enter') commitDebtEdit()">
+        </span>
+        <span class="text-[#D3D3D3]/60">Target: £0</span>
+      </div>
+      <div class="flex gap-2">
+        <input type="number" id="debt-payment-input" placeholder="£ amount" class="flex-1" min="1">
+        <button onclick="addDebtPayment()" class="px-4 py-2 text-xs font-tech uppercase bg-emerald-500/20 border border-emerald-500/50 rounded hover:bg-emerald-500/40 transition-all text-emerald-300">PAY</button>
+      </div>
+    </div>
+
+    <!-- NET WORTH TRACKER -->
+    <div class="glass-card rounded-xl p-5 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">NET WORTH</h2>
+        <span class="text-xs text-[#DC143C] font-mono">ASSETS vs DEBT</span>
+      </div>
+      <div class="text-center mb-4">
+        <div class="text-3xl font-tech font-bold text-white stat-value">£<span id="net-worth-total">0</span></div>
+        <div class="text-xs text-[#D3D3D3]/60">Total Net Worth</div>
+      </div>
+      <div class="space-y-2 mb-4">
+        <div class="flex items-center justify-between text-xs text-emerald-400">
+          <span>Assets:</span>
+          <span>£<span id="total-assets">0</span></span>
+        </div>
+        <div class="flex items-center justify-between text-xs text-[#DC143C]">
+          <span>Liabilities (Debt):</span>
+          <span>£<span id="total-liabilities">0</span></span>
+        </div>
+      </div>
+      <div class="flex gap-2 mb-3">
+        <input type="text" id="asset-name" placeholder="Asset name" class="flex-1">
+        <input type="number" id="asset-amount" placeholder="£" class="w-20" min="0" step="0.01">
+      </div>
+      <button onclick="addAsset()" class="w-full py-2 mb-3 text-xs font-tech uppercase bg-[#DC143C]/20 border border-[#DC143C]/50 rounded hover:bg-[#DC143C]/40 transition-all">ADD ASSET</button>
+      <div id="asset-list" class="space-y-1 max-h-32 overflow-y-auto text-xs"></div>
+    </div>
+
+    <!-- POMODORO TIMER -->
+    <div class="glass-card rounded-xl p-5 border-glow flex flex-col items-center">
+      <div class="w-full flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">FOCUS TIMER</h2>
+        <span class="text-xs text-[#DC143C] font-mono">POMODORO</span>
+      </div>
+      <div id="pomodoro-mode" class="text-xs font-tech uppercase tracking-widest text-[#DC143C] mb-2">WORK SESSION</div>
+      <div id="pomodoro-display" class="text-6xl font-tech font-bold text-white timer-display mb-4 glow-red">25:00</div>
+      <div class="flex gap-2 mb-4">
+        <button onclick="startPomodoro()" class="px-3 py-2 text-xs font-tech uppercase bg-[#DC143C]/20 border border-[#DC143C]/50 rounded hover:bg-[#DC143C]/40 transition-all">START</button>
+        <button onclick="pausePomodoro()" class="px-3 py-2 text-xs font-tech uppercase bg-[#1A1A1A] border border-[#D3D3D3]/30 rounded hover:bg-[#D3D3D3]/10 transition-all">PAUSE</button>
+        <button onclick="resetPomodoro()" class="px-3 py-2 text-xs font-tech uppercase bg-[#1A1A1A] border border-[#D3D3D3]/30 rounded hover:bg-[#D3D3D3]/10 transition-all">RESET</button>
+      </div>
+      <div class="text-xs text-[#D3D3D3]/60 text-center">Sessions completed today: <span id="pomo-count" class="text-[#DC143C] font-bold">0</span></div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- ROW 4: MILESTONES -->
+  <!-- ============================================ -->
+  <section class="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 relative z-10">
+
+    <div class="glass-card rounded-xl p-5 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">CSCS MILESTONES</h2>
+        <span class="text-xs text-[#DC143C] font-mono">SYS.02</span>
+      </div>
+      <ul class="space-y-2 text-xs">
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-cscs-course" onclick="saveMilestone('cscs-course')" class="accent-[#DC143C]"><label for="milestone-cscs-course">Level 1 Course Completed</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-cscs-test" onclick="saveMilestone('cscs-test')" class="accent-[#DC143C]"><label for="milestone-cscs-test">CITB HS&amp;E Test Passed</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-cscs-card" onclick="saveMilestone('cscs-card')" class="accent-[#DC143C]"><label for="milestone-cscs-card">CSCS Card Applied For</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-labourer" onclick="saveMilestone('labourer')" class="accent-[#DC143C]"><label for="milestone-labourer">Labourer Job Secured</label></li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-xl p-5 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">ADHD MILESTONES</h2>
+        <span class="text-xs text-[#DC143C] font-mono">SYS.03</span>
+      </div>
+      <ul class="space-y-2 text-xs">
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-gp-booked" onclick="saveMilestone('gp-booked')" class="accent-[#DC143C]"><label for="milestone-gp-booked">GP Appointment Booked</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-asrs" onclick="saveMilestone('asrs')" class="accent-[#DC143C]"><label for="milestone-asrs">ASRS Form Completed</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-rtc" onclick="saveMilestone('rtc')" class="accent-[#DC143C]"><label for="milestone-rtc">Right to Choose Referral Sent</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-assessment" onclick="saveMilestone('assessment')" class="accent-[#DC143C]"><label for="milestone-assessment">Assessment Attended</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-diagnosis" onclick="saveMilestone('diagnosis')" class="accent-[#DC143C]"><label for="milestone-diagnosis">Diagnosis Received</label></li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-xl p-5 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">CAREER MILESTONES</h2>
+        <span class="text-xs text-[#DC143C] font-mono">SYS.04</span>
+      </div>
+      <ul class="space-y-2 text-xs">
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-article1" onclick="saveMilestone('article1')" class="accent-[#DC143C]"><label for="milestone-article1">First Substack Article Published</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-volunteer" onclick="saveMilestone('volunteer')" class="accent-[#DC143C]"><label for="milestone-volunteer">Volunteering Role Secured</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-ga4" onclick="saveMilestone('ga4')" class="accent-[#DC143C]"><label for="milestone-ga4">GA4 Certification</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="milestone-digitaljob" onclick="saveMilestone('digitaljob')" class="accent-[#DC143C]"><label for="milestone-digitaljob">Digital Comms Job Landed</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- ROW 5: WINS JOURNAL + SUPPLEMENTS -->
+  <!-- ============================================ -->
+  <section class="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 relative z-10">
+
+    <div class="glass-card rounded-xl p-5 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">DAILY WINS JOURNAL</h2>
+        <span class="text-xs text-[#DC143C] font-mono">DOPAMINE LOG</span>
+      </div>
+      <p class="text-xs text-[#D3D3D3]/70 mb-3 italic">Log 3 wins every day. Even small ones count.</p>
+      <div class="space-y-2 mb-3">
+        <input type="text" id="win1" placeholder="Win #1" onchange="saveWins()">
+        <input type="text" id="win2" placeholder="Win #2" onchange="saveWins()">
+        <input type="text" id="win3" placeholder="Win #3" onchange="saveWins()">
+      </div>
+      <div class="text-xs text-[#D3D3D3]/60">Last saved: <span id="wins-saved-time" class="text-[#DC143C]">Never</span></div>
+    </div>
+
+    <div class="glass-card rounded-xl p-5 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+        <h2 class="font-tech text-base text-white font-bold tracking-wider">DAILY SUPPLEMENTS</h2>
+        <span class="text-xs text-[#DC143C] font-mono">FUEL</span>
+      </div>
+      <ul class="space-y-2 text-xs">
+        <li class="flex items-center gap-2"><input type="checkbox" id="supp-water" onclick="saveSupplements('water')" class="accent-[#DC143C]"><label for="supp-water">Water (3L)</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="supp-vitd" onclick="saveSupplements('vitd')" class="accent-[#DC143C]"><label for="supp-vitd">Vitamin D</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="supp-omega" onclick="saveSupplements('omega')" class="accent-[#DC143C]"><label for="supp-omega">Omega-3</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="supp-mag" onclick="saveSupplements('mag')" class="accent-[#DC143C]"><label for="supp-mag">Magnesium</label></li>
+        <li class="flex items-center gap-2"><input type="checkbox" id="supp-protein" onclick="saveSupplements('protein')" class="accent-[#DC143C]"><label for="supp-protein">Protein (post-workout)</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- DOCUMENT INGESTION ENGINE -->
+  <!-- ============================================ -->
+  <section class="w-full max-w-7xl mx-auto mb-6 relative z-10">
+    <div class="glass-card rounded-2xl p-6 border-glow">
+      <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-3 mb-5">
+        <div>
+          <h2 class="font-tech text-xl text-white font-bold tracking-wider">DOCUMENT INGESTION ENGINE</h2>
+          <p class="text-[11px] text-[#D3D3D3]/60 mt-1">Drop email screenshots, PDFs, or payslips — auto-extract, classify, and update trackers.</p>
+        </div>
+        <span class="text-xs text-[#DC143C] font-mono">AI.SYS</span>
+      </div>
+
+      <div id="drop-zone" class="border-2 border-dashed border-[#DC143C]/40 rounded-xl p-8 text-center hover:border-[#DC143C] hover:bg-[#DC143C]/5 transition-all cursor-pointer mb-5">
+        <input type="file" id="file-input" multiple accept="image/*,.pdf,.txt,.eml,.msg" class="hidden">
+        <div class="text-5xl mb-3">📥</div>
+        <div class="font-tech text-white text-lg tracking-wider mb-1">DROP FILES OR CLICK TO UPLOAD</div>
+        <div class="text-xs text-[#D3D3D3]/60">Supports: PNG, JPG, WEBP, PDF, TXT</div>
+        <div class="text-[10px] text-[#D3D3D3]/40 mt-2">All processing happens in your browser. Nothing is uploaded to a server.</div>
+      </div>
+
+      <div id="processing-status" class="hidden mb-5">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-3 h-3 bg-[#DC143C] rounded-full animate-pulse"></div>
+          <span id="processing-text" class="text-xs font-tech text-white tracking-wider">PROCESSING...</span>
+          <span id="processing-progress" class="text-xs text-[#DC143C] font-mono ml-auto">0%</span>
+        </div>
+        <div class="w-full h-2 bg-[#0A0A0A] rounded-full overflow-hidden border border-[#DC143C]/30">
+          <div id="processing-bar" class="h-full bg-gradient-to-r from-[#DC143C] to-[#ff4d6d] transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div id="preview-modal" class="hidden border border-[#DC143C]/40 rounded-xl p-5 bg-[#0A0A0A]/80">
+        <div class="flex items-center justify-between border-b border-[#DC143C]/30 pb-2 mb-4">
+          <h3 class="font-tech text-white text-base tracking-wider">EXTRACTED DATA — CONFIRM &amp; SAVE</h3>
+          <button onclick="closePreview()" class="text-[#DC143C] hover:text-white text-sm">✕</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="text-[10px] font-tech uppercase tracking-wider text-[#D3D3D3]/60 block mb-1">Document Type</label>
+            <select id="ext-doc-type" class="w-full text-xs bg-[#1A1A1A] border border-[#DC143C]/30 rounded p-2 text-[#D3D3D3]">
+              <option value="application_confirmation">Application Confirmation</option>
+              <option value="interview_invite">Interview Invitation</option>
+              <option value="rejection">Rejection</option>
+              <option value="offer">Job Offer</option>
+              <option value="certification">Certification</option>
+              <option value="payment">Payment / Payslip</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-tech uppercase tracking-wider text-[#D3D3D3]/60 block mb-1">Date</label>
+            <input type="text" id="ext-date" placeholder="DD/MM/YYYY">
+          </div>
+          <div>
+            <label class="text-[10px] font-tech uppercase tracking-wider text-[#D3D3D3]/60 block mb-1">Company</label>
+            <input type="text" id="ext-company" placeholder="Company name">
+          </div>
+          <div>
+            <label class="text-[10px] font-tech uppercase tracking-wider text-[#D3D3D3]/60 block mb-1">Role / Title</label>
+            <input type="text" id="ext-role" placeholder="Role or title">
+          </div>
+          <div>
+            <label class="text-[10px] font-tech uppercase tracking-wider text-[#D3D3D3]/60 block mb-1">Amount (£)</label>
+            <input type="number" id="ext-amount" placeholder="0.00" step="0.01">
+          </div>
+          <div>
+            <label class="text-[10px] font-tech uppercase tracking-wider text-[#D3D3D3]/60 block mb-1">Link / URL</label>
+            <input type="text" id="ext-url" placeholder="https://...">
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="text-[10px] font-tech uppercase tracking-wider text-[#D3D3D3]/60 block mb-1">Extracted Text (raw)</label>
+          <textarea id="ext-raw" rows="4" class="text-[11px] font-mono"></textarea>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="saveIngestedDocument()" class="flex-1 py-2 text-xs font-tech uppercase bg-[#DC143C]/20 border border-[#DC143C]/50 rounded hover:bg-[#DC143C]/40 transition-all text-white">SAVE &amp; UPDATE TRACKERS</button>
+          <button onclick="closePreview()" class="px-6 py-2 text-xs font-tech uppercase bg-[#1A1A1A] border border-[#D3D3D3]/30 rounded hover:bg-[#D3D3D3]/10 transition-all">CANCEL</button>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <div class="flex items-center justify-between border-b border-[#DC143C]/20 pb-2 mb-3">
+          <h3 class="font-tech text-sm text-white tracking-wider">INGESTED DOCUMENTS</h3>
+          <span class="text-[10px] text-[#DC143C] font-mono" id="ingested-count">0 DOCS</span>
+        </div>
+        <div id="ingested-feed" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- FOOTER -->
+  <!-- ============================================ -->
+  <footer class="w-full max-w-7xl mx-auto mt-6 pt-4 border-t border-[#DC143C]/30 text-center relative z-10">
+    <p class="text-sm md:text-base font-tech tracking-[0.25em] text-white uppercase glow-red">
+      BUILT BY DENZIEL <span class="text-[#DC143C]">.</span> FOR DENZIEL <span class="text-[#DC143C]">.</span> NO EXCUSES
+    </p>
+    <a href="#" class="checkout-btn">Checkout</a>
+  </footer>
+
+  <!-- Main Script -->
+  <script src="script.js"></script>
+</body>
+</html>
